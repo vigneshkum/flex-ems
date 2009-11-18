@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="init();" 
+	horizontalAlign="center" width="100%" height="100%">
+	
+	<mx:Metadata>
+		[Event(name="selectTab", type="com.exist.ems.control.events.SelectTabEvent")]
+	</mx:Metadata>
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.core.Application;
+			import com.exist.ems.model.employee.Employee;
+			import mx.events.CloseEvent;
+			import mx.controls.Alert;
+			import mx.events.ValidationResultEvent;
+			
+			import com.exist.ems.view.service.user.UserService;
+			
+			private var userService:UserService;
+			
+			private function checkLogin(event:ValidationResultEvent):void
+			{
+				if(event.type == ValidationResultEvent.VALID)
+				{	
+					loginButton.enabled = true;
+				}
+				else
+				{
+					loginButton.enabled = false;
+				}
+			}
+			
+			private function init():void
+			{
+				this.userService = new UserService();
+				Application.application.addEventListener("verified",handleVerified);
+			}
+		
+			private function doLogin():void
+			{
+				userService.login(userName.text,password.text);
+			}
+			
+			private function confirmSave(event:Event):void
+			{
+				Alert.show("Are you sure?","Save Employee Confirm",3,this,save);
+			}
+			
+			private function save(event:CloseEvent):void
+			{
+				if(event.detail == Alert.YES)
+				{
+					var employee:Employee = new Employee();
+					employee.firstName = fname.text;
+					employee.lastName = lname.text;
+					employee.birthDate = bdate.selectedDate;
+					employee.dateHired = dhired.selectedDate;
+					employee.empCode = empcode.text;
+					employee.jobLevel = jlevel.text;
+					employee.position = emp_position.text;
+					
+					employee.email = email.text;
+					employee.username = emp_username.text;
+					
+					if( emp_password.text != emp_conf_pass.text)
+					{
+						Alert.show("Password does not match.","Error");
+						return;
+					}
+					employee.password = emp_password.text;
+					
+					this.userService.addEmployee(employee);
+					
+				}
+			}
+			
+			private function handleVerified(event:Event):void
+			{
+				cancelReg();
+			}
+			
+			private function cancelReg():void
+			{
+				// clear first form textfield before going to login page
+				fname.text = null;
+				lname.text = null;
+				bdate.selectedDate = null;
+				dhired.selectedDate = null;
+				empcode.text = null;
+				jlevel.text = null;
+				emp_position.text = null;
+				email.text = null;
+				emp_username.text = null;
+				emp_password.text = null;
+				emp_conf_pass.text = null;
+				
+				this.currentState='';
+			}
+		]]>
+	</mx:Script>
+	
+	<!-- validators -->
+	<mx:Validator id="checkUser" source="{userName}" property="text" required="true" valid="checkLogin(event);" invalid="checkLogin(event);" requiredFieldError="Please enter username." />
+	
+	<mx:Validator id="checkPass" source="{password}" property="text" required="true" valid="checkLogin(event);" invalid="checkLogin(event);" requiredFieldError="Please enter password." />
+	
+	<mx:Spacer height="10"/>
+	<mx:Panel width="216" height="260" title="Log In" id="loginPanel"
+			  borderColor="#B5B9BB" dropShadowEnabled="true" horizontalAlign="center"
+			  horizontalScrollPolicy="off" verticalScrollPolicy="off">
+		
+		<mx:Form  >
+	        <mx:FormItem required="true">
+	            <mx:Label text="User Name:" x="10" y="10" styleName="myText"/>
+				<mx:TextInput focusEnabled="true" width="149" x="10" y="36" id="userName" styleName="personalTextInput"/>
+	        </mx:FormItem>
+	        <mx:FormItem required="true">
+	            <mx:Label text="Password:" x="10" y="62" styleName="myText"/>
+				<mx:TextInput width="148" x="10" y="88" id="password" displayAsPassword="true" enter="doLogin();" styleName="personalTextInput"/>
+	        </mx:FormItem>
+		</mx:Form>
+		
+		<mx:Button id="loginButton" textAlign="center" label="Login" width="70%" height="15%" 
+			 y="120"  click="doLogin();" styleName="buttonNoOfficial"	/>
+		<mx:Label  color="blue" fontStyle="normal" fontThickness="10" text="Change Password" x="30" y="170" textAlign="left" />
+		<mx:LinkButton  color="blue" fontStyle="normal" fontThickness="10" label="Add Employee" x="30" y="172" textAlign="left" click="{this.currentState='AddEmployee'}"/>
+	</mx:Panel>
+	
+	<!-- Add employee states -->
+	
+	<mx:states>
+		<mx:State name="AddEmployee" id="addEmpStates">
+			<mx:AddChild position="lastChild">
+				<mx:HBox>
+					
+					<mx:Panel title="Employee Details">
+						<mx:Form>
+							<mx:FormItem required="true">
+								<mx:Label text="First Name:"/>
+								<mx:TextInput width="148" id="fname"/>									
+							</mx:FormItem>
+							<mx:FormItem required="true">
+								<mx:Label text="Lasst Name:"/>
+								<mx:TextInput width="148" id="lname"/>									
+							</mx:FormItem>
+							<mx:FormItem required="true">
+								<mx:Label text="Employee Code:"/>
+								<mx:TextInput width="148" id="empcode"/>									
+							</mx:FormItem>
+							<mx:FormItem required="true">
+								<mx:Label text="Employee Position:"/>
+								<mx:TextInput width="148" id="emp_position"/>									
+							</mx:FormItem>
+							<mx:FormItem>
+								<mx:Label text="Job Level:"/>
+								<mx:TextInput width="148" id="jlevel"/>									
+							</mx:FormItem>
+							<mx:FormItem required="true">
+								<mx:Label text="BirthDate:"/>
+								<mx:DateField id="bdate" yearNavigationEnabled="true"/>						
+							</mx:FormItem>
+							<mx:FormItem required="true">
+								<mx:Label text="Date Hired:"/>
+								<mx:DateField id="dhired" yearNavigationEnabled="true"/>									
+							</mx:FormItem>
+						</mx:Form>
+					</mx:Panel>
+					
+					<mx:Panel title="Employee Credentials">
+						<mx:Form>
+							<mx:FormItem>
+								<mx:Label text="Email Address:"/>
+								<mx:TextInput width="148" id="email"/>									
+							</mx:FormItem>
+							<mx:FormItem required="true">
+								<mx:Label text="Username:"/>
+								<mx:TextInput width="148" id="emp_username"/>									
+							</mx:FormItem>
+							<mx:FormItem required="true">
+								<mx:Label text="Password:"/>
+								<mx:TextInput width="148" id="emp_password" displayAsPassword="true"/>									
+							</mx:FormItem>
+							<mx:FormItem required="true">
+								<mx:Label text="Confirm Password:"/>
+								<mx:TextInput width="148" id="emp_conf_pass" displayAsPassword="true"/>									
+							</mx:FormItem>
+						</mx:Form>
+						
+						<mx:ControlBar id="controlButtons">
+							<mx:Button id="buttonSave" click="confirmSave(event)" label="Save"/>
+							<mx:Button id="buttonClose" label="Cancel" click="cancelReg()" />
+ 						</mx:ControlBar>
+						
+					</mx:Panel>
+				</mx:HBox>
+			</mx:AddChild>
+			<mx:RemoveChild target="{loginPanel}"/>
+		</mx:State>
+	</mx:states>
+	
+</mx:VBox>
