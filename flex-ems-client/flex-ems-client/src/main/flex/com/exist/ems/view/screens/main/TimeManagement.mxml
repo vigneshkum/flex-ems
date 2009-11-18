@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"
+	creationComplete="init();">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.exist.ems.control.events.timecard.TimeOutEvents;
+			import com.exist.ems.control.events.timecard.TimeInEvents;
+			import com.exist.ems.model.timecard.TimeCard;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import com.exist.ems.utils.DateUtils;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import com.exist.ems.model.UserData;
+			import com.exist.ems.view.service.timecard.TimeCardService;
+			
+			[Bindable]
+			private var timeCardService:TimeCardService;
+			private var userData:UserData = UserData.getInstance();
+			
+			private static const DATE_FORMAT:String = "YYYY-MM-DD";
+			private static const DATE_TIME_FORMAT:String = "L:NN:SS A YYYY-MM-DD";
+			
+			private function init():void
+			{
+				timeCardService = new TimeCardService();
+				timeCardService.getListOfCurrentLog(userData.empCode);
+				timeCardService.getListOfPreviousLog(userData.empCode);
+			}
+			
+			private function formatTimesheetDate(date:Object,item:DataGridColumn):String
+			{
+				var formatString:String = null;
+				if(date.timesheetDate != null)
+					formatString = DateUtils.dateFormat(date.timesheetDate,DATE_FORMAT);
+				return formatString;
+			}
+			
+			private function formatTimeIn(date:Object, item:DataGridColumn):String
+			{
+				var formatString:String = null;
+				if(date.timeIn != null) 
+				{
+					formatString = DateUtils.dateTimeFormat(date.timeIn,DATE_TIME_FORMAT);
+				}
+				return formatString;
+			}
+			
+			private function getDayName(date:Object, item:DataGridColumn):String
+			{
+				var formatString:String = null;
+				if(date.timesheetDate)
+					formatString = DateUtils.dayOfWeekAsString(date.timesheetDate);
+				return formatString;
+			}
+			
+			private function formatTimeOut(date:Object, item:DataGridColumn):String
+			{
+				var formatString:String = null;
+				if(date.timeOut != null) 
+				{
+					formatString = DateUtils.dateTimeFormat(date.timeOut,DATE_TIME_FORMAT);
+				}
+				return formatString;
+			}
+			
+			private function confirmTimeIn(event:Event):void
+			{
+				Alert.show("Are you sure?","Time In Confirm",3,this,timeIn);
+			}
+			
+			private function confirmTimeOut(event:Event):void
+			{
+				Alert.show("Are you sure?","Time Out Confirm",3,this,timeOut);
+			}
+			
+			private function timeIn(event:CloseEvent):void
+			{
+				if(event.detail == Alert.YES)
+				{
+					new TimeInEvents(this.timeCardService).dispatch();
+				}
+			}
+			
+			private function timeOut(event:CloseEvent):void
+			{
+				if(event.detail == Alert.YES)
+				{
+					new TimeOutEvents(this.timeCardService).dispatch();
+				}
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:HBox horizontalAlign="right">
+		<mx:Button id="buttonTimeIn" label="Time In" click="confirmTimeIn(event);"/>
+		<mx:Button id="buttonTimeOut" label="Time Out" click="confirmTimeOut(event);"/>
+	</mx:HBox>
+	
+	<!-- Current week time entry -->
+	<mx:Panel title="Current Week Entry" 
+         paddingTop="10" paddingRight="10" paddingBottom="10" paddingLeft="10" horizontalAlign="center" >
+         
+	<mx:DataGrid id="currentWeekLog" dataProvider="{this.timeCardService.listOfCurrentLog}" resizableColumns="true" width="650" horizontalScrollPolicy="off" >
+		<mx:columns>
+			<mx:DataGridColumn headerText="Day" labelFunction="getDayName"/>
+			<mx:DataGridColumn headerText="Remarks" dataField="remarks"/>
+			<mx:DataGridColumn headerText="Timesheet Date" dataField="timesheetDate" labelFunction="formatTimesheetDate"/>
+			<mx:DataGridColumn headerText="Time In" dataField="timeIn" labelFunction="formatTimeIn"/>
+			<mx:DataGridColumn headerText="Time Out" dataField="timeOut" labelFunction="formatTimeOut"/>
+		</mx:columns>
+	</mx:DataGrid>
+	
+	</mx:Panel>
+	
+	<!-- Last week time entry -->
+	<mx:Panel title="Last Week Entry" 
+         paddingTop="10" paddingRight="10" paddingBottom="10" paddingLeft="10" horizontalAlign="center">
+         
+	<mx:DataGrid id="lastWeekLog" dataProvider="{this.timeCardService.listOfPreviousLog}" resizableColumns="true" width="650">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Day" labelFunction="getDayName"/>
+			<mx:DataGridColumn headerText="Remarks" dataField="remarks"/>
+			<mx:DataGridColumn headerText="Timesheet Date" dataField="timesheetDate" labelFunction="formatTimesheetDate"/>
+			<mx:DataGridColumn headerText="Time In" dataField="timeIn" labelFunction="formatTimeIn"/>
+			<mx:DataGridColumn headerText="Time Out" dataField="timeOut" labelFunction="formatTimeOut"/>
+		</mx:columns>
+	</mx:DataGrid>
+	
+	</mx:Panel>
+	
+	<!-- task management 
+	<mx:Panel title="Employee Task' List" 
+         paddingTop="10" paddingRight="10" paddingBottom="10" paddingLeft="10" horizontalAlign="center">
+         
+	<mx:DataGrid id="taskLog">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Id" />
+			<mx:DataGridColumn headerText="Task Title"/>
+			<mx:DataGridColumn headerText="Project Name"/>
+			<mx:DataGridColumn headerText="Start Time"/>
+			<mx:DataGridColumn headerText="End Time"/>
+			<mx:DataGridColumn headerText="Duration"/>
+			<mx:DataGridColumn headerText="Status"/>
+			<mx:DataGridColumn headerText="Link"/>
+			<mx:DataGridColumn headerText="Actions"/>
+		</mx:columns>
+	</mx:DataGrid>
+	
+	</mx:Panel>
+	-->
+	
+</mx:VBox>
