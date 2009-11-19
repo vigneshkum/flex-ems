@@ -2,4 +2,4 @@
 
 echo 'Start flex-ems-server'
 
-mvn -o jetty:run-exploded
+mvn -o -Dmaven.test.skip=true jetty:run-exploded

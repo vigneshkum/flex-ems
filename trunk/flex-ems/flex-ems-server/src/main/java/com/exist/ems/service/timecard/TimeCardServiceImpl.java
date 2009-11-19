@@ -41,7 +41,7 @@ public class TimeCardServiceImpl implements TimeCardService {
 			return timeCardDao.loadAll();
 		} catch (DataAccessException e) {
 			e.printStackTrace();
-			throw new EmsException("Error retrieving time cards");
+			throw new EmsException("Error retrieving time cards",e);
 		}
 	}
 
@@ -52,20 +52,26 @@ public class TimeCardServiceImpl implements TimeCardService {
 		try {
 			timeCardDao.save(timeCard);
 		} catch (DataAccessException e) {
-			e.printStackTrace();
-			throw new EmsException("Error saving time card");
+		    	e.printStackTrace();
+			throw new EmsException("Error saving time card",e);
 		}
 	}
 
 	public void saveTimeIn(String empCode) throws EmsException {
-		log.info("****************** logging in: =>"+empCode);
 		//checkEmployee(empCode);
 		TimeCard timeIn = new TimeCard();
 		timeIn.setEmpCode(empCode);
 		timeIn.setTimeIn(Calendar.getInstance().getTime());
 		timeIn.setTimesheetDate(new Date());
 		
-		save(timeIn);
+		try
+		{
+		    save(timeIn);
+		} catch (Exception e)
+		{
+		    e.printStackTrace();
+		    throw new EmsException(e.getMessage(), e);
+		}
 	}
 
 	public void saveTimeOut(String empCode) throws EmsException {
@@ -74,7 +80,14 @@ public class TimeCardServiceImpl implements TimeCardService {
 		TimeCard timeOut = timeCardDao.getCurrentTimeCard(empCode);
 		timeOut.setTimeOut(Calendar.getInstance().getTime());
 		
-		save(timeOut);
+		try
+		{
+		    save(timeOut);
+		} catch (Exception e)
+		{
+		    e.printStackTrace();
+		    throw new EmsException(e.getMessage(), e);
+		}
 	}
 
 	

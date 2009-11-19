@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.exist.ems.dao.employee.EmployeeDao;
@@ -62,7 +63,14 @@ public class EmployeeServiceImpl implements EmployeeService
     {
 	final String md5pass = DigestUtils.md5Hex(employee.getPassword());
 	employee.setPassword(md5pass);
-	employeeDao.save(employee);
+	try
+	{
+	    employeeDao.save(employee);
+	} catch (DataAccessException e)
+	{
+	    e.printStackTrace();
+	    throw new EmsException(e.getMessage(), e);
+	}
     }
 
     /*
