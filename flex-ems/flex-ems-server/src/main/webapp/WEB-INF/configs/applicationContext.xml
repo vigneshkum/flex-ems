@@ -104,4 +104,10 @@
 		class="com.exist.ems.dao.employee.EmployeeDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
+	
+	<!-- ================ LOGGER AOP CONFIG ==================================== -->
+	
+	<aop:aspectj-autoproxy/>
+	<bean class="com.exist.ems.aop.AopLogger" />
+	
 </beans>

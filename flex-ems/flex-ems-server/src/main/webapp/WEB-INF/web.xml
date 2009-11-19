@@ -51,7 +51,7 @@
 	</servlet-mapping>
 	
 	<welcome-file-list>
-		<welcome-file>flex-ems-client-1.0.html</welcome-file>
+		<welcome-file>main.html</welcome-file>
 	</welcome-file-list>
 	
 </web-app>
