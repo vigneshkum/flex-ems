@@ -11,10 +11,6 @@
     	<![CDATA[
 			import com.exist.ems.control.events.login.LogOutEvent;
 			import com.exist.ems.control.events.login.LoginEvent;
-			import com.exist.ems.model.UserModelLocator;
-    		
-    		[Bindable]
-    		private var modelLocator:UserModelLocator = UserModelLocator.getInstance();
     		
     		private function init():void
     		{
@@ -49,6 +45,8 @@
     	<view:WelcomeScreen id="mainScr" logout="logoutHandler(event)" />
     </mx:ViewStack>
     
-    <mx:Label text="© 2009 by Cybernetics.com" color="#FFFFFF"/>
-    
+	<!--
+    <mx:Label text="© 2009 by cybernetics.clanteam.com" color="#FFFFFF" fontWeight="bold"/>
+	<mx:Label text="email: eman.nollase@gmail.com" color="#FFFFFF" fontWeight="bold"/>
+    -->
 </mx:Application>

@@ -37,8 +37,8 @@
                     <mx:String>My TimeCard</mx:String>
                     <mx:String>My Records</mx:String>
                     <mx:String>My Reports</mx:String>
-					<mx:String>My Profile</mx:String>
-					<mx:String>My Task</mx:String>
+					<!-- <mx:String>My Profile</mx:String>
+					<mx:String>My Task</mx:String> -->
                 </mx:Array>
             </mx:dataProvider>
         </mx:ToggleButtonBar>
@@ -50,7 +50,8 @@
 			<screens:EmployeeRecords id="myRecords" label="MyRecord" width="100%" height="100%"/>
 			<screens:Reports id="myReports" label="MyReports" width="100%" height="100%"/>
 		</mx:ViewStack>
-		<mx:Canvas width="120" height="600" horizontalCenter="center" backgroundAlpha="50" backgroundColor="#FFFFFF" borderColor="#c10f0f" borderStyle="solid" borderThickness="1" cornerRadius="5" >
+		<mx:Canvas width="120" height="600" horizontalCenter="center" backgroundColor="#E4E4DA" borderColor="#0f28c1" borderStyle="solid" borderThickness="1" cornerRadius="5" >
+			<mx:Image width="90" height="90"/>
 			<mx:Button x="15" y="100" label="Exit" cornerRadius="5"
 					   labelPlacement="bottom" width="90" height="90"
 					   click="exit();" />
