@@ -3,7 +3,7 @@
 global
 {
 	color: #000000;
-	cornerRadius:0;
+	cornerRadius:5;
 }
 
 Application
@@ -19,7 +19,7 @@ Application
 	modal-transparency-color:	#000000;
 	modal-transparency-blur:	2;
 }
-
+/*
 ComboBox
 {
 	cornerRadius: 0;
@@ -31,7 +31,7 @@ NumericStepper
 	borderThickness: 1;
 	cornerRadius: 0;
 	borderStyle: inset;
-}
+}*/
 DateChooser
 {
 	cornerRadius: 0;

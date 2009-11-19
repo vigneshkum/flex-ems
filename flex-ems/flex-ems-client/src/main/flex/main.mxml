@@ -1,40 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical"
-	minWidth="990" minHeight="550"
-	height="100%"
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+	horizontalAlign="center" width="100%" height="100%"	
 	xmlns:view="com.exist.ems.view.screens.*"
 	xmlns:control="com.exist.ems.control.*"
-	horizontalAlign="center"
 	creationComplete="init()">
 
 	<mx:Style source="/css/plain.css"/>
 
     <mx:Script>
     	<![CDATA[
-    		import com.exist.ems.control.events.login.LogOutEvent;
-    		import mx.controls.Alert;
-    		
-    		import com.exist.ems.model.UserModelLocator;
+			import com.exist.ems.control.events.login.LogOutEvent;
+			import com.exist.ems.control.events.login.LoginEvent;
+			import com.exist.ems.model.UserModelLocator;
     		
     		[Bindable]
     		private var modelLocator:UserModelLocator = UserModelLocator.getInstance();
     		
     		private function init():void
     		{
-    			 Application.application.addEventListener("loginMainEvent",loginHandler);
+    			 Application.application.addEventListener(LoginEvent.MAIN_LOGIN,loginSuccessHandler);
+				 Application.application.addEventListener(LoginEvent.FAILED_LOGIN,loginFailedHandler);
     		}
     		
     		private function logoutHandler(event:LogOutEvent):void
     		{
     			vsMain.selectedIndex = event.logout;
-    			login.userName.text = null;
-    			login.password.text = null;
+    			login.userName.text = "";
+    			login.password.text = "";
+				login.msgStr.text = null;
     		}
     		
-    		private function loginHandler(event:Event):void
+    		private function loginSuccessHandler(event:Event):void
     		{
     			vsMain.selectedIndex = 1;
     		}
+			
+			private function loginFailedHandler(event:Event):void
+			{
+				login.msgStr.text = "Username or Password is not valid";
+			}
     	]]>
     </mx:Script>
     
