@@ -94,6 +94,7 @@
 				emp_password.text = null;
 				emp_conf_pass.text = null;
 				
+				msgStr.text = null;
 				this.currentState='';
 			}
 		]]>
@@ -105,7 +106,7 @@
 	<mx:Validator id="checkPass" source="{password}" property="text" required="true" valid="checkLogin(event);" invalid="checkLogin(event);" requiredFieldError="Please enter password." />
 	
 	<mx:Spacer height="10"/>
-	<mx:Panel width="250" height="260" title="Log In" id="loginPanel"
+	<mx:Panel width="250" height="350" title="Log In" id="loginPanel"
 			  borderColor="#B5B9BB" dropShadowEnabled="true" horizontalAlign="center"
 			  horizontalScrollPolicy="off" verticalScrollPolicy="off">
 		
@@ -123,6 +124,7 @@
 		<mx:Button id="loginButton" textAlign="center" label="Login" width="70%" height="15%" 
 			 y="120"  click="doLogin();" styleName="buttonNoOfficial"	/>
 		<mx:LinkButton  color="blue" fontStyle="normal" fontThickness="10" label="Change Password" x="30" y="170" textAlign="left" />
+		<mx:Label text="Click 'Add Employee' before you can login"/>
 		<mx:LinkButton  color="blue" fontStyle="normal" fontThickness="10" label="Add Employee" x="30" y="172" textAlign="left" click="{this.currentState='AddEmployee'}"/>
 	</mx:Panel>
 	

@@ -14,8 +14,8 @@ Application
 	background-color: 			#666666;
 	theme-color: 				#333333;
 	font-weight:				normal;
-	background-image:			Embed("/assets/general/fondo3.jpg");
-	background-size:			"100%";
+	/*background-image:			Embed("/assets/general/main_bg.png");
+	background-size:			"50%";*/
 	modal-transparency-color:	#000000;
 	modal-transparency-blur:	2;
 }
