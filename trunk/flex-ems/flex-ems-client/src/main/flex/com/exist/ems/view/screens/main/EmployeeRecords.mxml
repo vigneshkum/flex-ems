@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">
 	
-	<mx:Canvas>
-		<mx:Label text="Testing!!!!!!!!!"/>
-	</mx:Canvas>
+	<mx:Image source="http://localhost:8282/jcrFile?docId=5a1933f1-0cbc-4b85-be36-4bc31d206f65" />
 	
 </mx:VBox>

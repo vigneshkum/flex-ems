@@ -32,7 +32,6 @@ package com.exist.ems.view.service.user
 		
 		public function addUserData(data:Object):void
 		{
-			//this.verified = event.result as Boolean;
 			var userdata:UserData = UserData.getInstance();
 			userdata.empCode = data.empCode;
 			userdata.firstName = data.firstName;

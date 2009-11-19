@@ -105,7 +105,7 @@
 	<mx:Validator id="checkPass" source="{password}" property="text" required="true" valid="checkLogin(event);" invalid="checkLogin(event);" requiredFieldError="Please enter password." />
 	
 	<mx:Spacer height="10"/>
-	<mx:Panel width="216" height="260" title="Log In" id="loginPanel"
+	<mx:Panel width="250" height="260" title="Log In" id="loginPanel"
 			  borderColor="#B5B9BB" dropShadowEnabled="true" horizontalAlign="center"
 			  horizontalScrollPolicy="off" verticalScrollPolicy="off">
 		
@@ -119,10 +119,10 @@
 				<mx:TextInput width="148" x="10" y="88" id="password" displayAsPassword="true" enter="doLogin();" styleName="personalTextInput"/>
 	        </mx:FormItem>
 		</mx:Form>
-		
+		<mx:Label id="msgStr" fontWeight="bold" color="#f40b0b"/>
 		<mx:Button id="loginButton" textAlign="center" label="Login" width="70%" height="15%" 
 			 y="120"  click="doLogin();" styleName="buttonNoOfficial"	/>
-		<mx:Label  color="blue" fontStyle="normal" fontThickness="10" text="Change Password" x="30" y="170" textAlign="left" />
+		<mx:LinkButton  color="blue" fontStyle="normal" fontThickness="10" label="Change Password" x="30" y="170" textAlign="left" />
 		<mx:LinkButton  color="blue" fontStyle="normal" fontThickness="10" label="Add Employee" x="30" y="172" textAlign="left" click="{this.currentState='AddEmployee'}"/>
 	</mx:Panel>
 	

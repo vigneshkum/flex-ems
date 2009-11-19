@@ -13,6 +13,7 @@ package com.exist.ems.business.delegates
 		public function TimeCardDelegate(responder:IResponder)
 		{
 			this.service = new RemoteObject("timecardService");
+			this.service.showBusyCursor = true;
 			this.responder = responder;
 		}
 

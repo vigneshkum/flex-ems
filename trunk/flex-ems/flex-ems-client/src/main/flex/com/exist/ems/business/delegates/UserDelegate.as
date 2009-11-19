@@ -14,7 +14,8 @@ package com.exist.ems.business.delegates
 		
 		public function UserDelegate(responder:IResponder)
 		{
-			this.service = new RemoteObject("userService");
+			service = new RemoteObject("userService");
+			service.showBusyCursor = true;
 			this.responder = responder;
 		}
 
