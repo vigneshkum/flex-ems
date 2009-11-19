@@ -22,7 +22,7 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
+			<!-- <dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>flex-ems-config</artifactId>
 				<version>${project.version}</version>
@@ -31,7 +31,7 @@
 				<groupId>${project.groupId}</groupId>
 				<artifactId>flex-ems-client</artifactId>
 				<version>${project.version}</version>
-			</dependency>
+			</dependency> -->
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>flex-ems-server</artifactId>
