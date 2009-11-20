@@ -90,7 +90,7 @@
     </tx:advice>
     <aop:config>
         <aop:pointcut id="buspinoyServiceOperation"
-                      expression="execution(* com.buspinoy.server.service..*(..))"/>
+                      expression="execution(* com.exist.ems.service..*(..))"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="buspinoyServiceOperation"/>
     </aop:config>
 	
@@ -108,6 +108,6 @@
 	<!-- ================ LOGGER AOP CONFIG ==================================== -->
 	
 	<aop:aspectj-autoproxy/>
-	<bean class="com.exist.ems.aop.AopLogger" />
+	<bean class="com.exist.ems.aop.AopLogger" /> 
 	
 </beans>
