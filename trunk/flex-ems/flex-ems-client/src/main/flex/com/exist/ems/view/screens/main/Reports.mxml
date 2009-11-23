@@ -1,8 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"  width="100%" height="100%"
+		 horizontalAlign="center" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10" 
+		 xmlns:screens="com.exist.ems.view.screens.*" xmlns:rockfish="com.rockfish.*"
+		 creationComplete="init();">
 	
-	<mx:Canvas>
-		<mx:Label text="Testing"/>
-	</mx:Canvas>
+	
+	<mx:Script>
+		<![CDATA[
+			import com.exist.ems.model.ReportVO;
+			import com.exist.ems.model.UserData;
+			import com.exist.ems.utils.ConstantEvents;
+			import com.exist.ems.utils.Constants;
+			import com.exist.ems.utils.DateUtils;
+			import com.exist.ems.view.service.timecard.TimeCardService;
+			
+			import mx.collections.ArrayCollection;
+			import mx.containers.HBox;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.core.Application;
+			import mx.events.ItemClickEvent;
+			
+			[Bindable]
+			private var userData:UserData = UserData.getInstance();
+			[Bindable]
+			public var timeCardService:TimeCardService;
+			[Bindable] public var nav:ArrayCollection = new ArrayCollection();
+			
+			private static const NUM_PER_PAGE:uint = 2; 
+			private var intPages:uint = 0;
+			/* Number of pages per view */
+			public var navSize:uint = 5;
+			
+			private function init():void
+			{
+				this.timeCardService = new TimeCardService();
+				Application.application.addEventListener(ConstantEvents.LOADED_REPORT, initializePaging);
+			}
+			
+			
+			private function getReportParams(start:int = 0, count:int = 0):ReportVO
+			{
+				var rptvo:ReportVO = new ReportVO();
+				rptvo.count = count;
+				rptvo.first = start;
+				rptvo.fromDate = fromDate.selectedDate;
+				rptvo.toDate = toDate.selectedDate;
+				rptvo.empCode = userData.empCode;
+				
+				return rptvo;
+			}
+			
+			private function formatDate(date:Object,dataItem:DataGridColumn):String
+			{
+				var formatString:String = null;
+				if(date.timesheetDate != null && dataItem.dataField == "timesheetDate")
+				{
+					formatString = DateUtils.dateFormat(date.timesheetDate,Constants.DATE_FORMAT);
+				}
+				
+				if(date.timeIn != null && dataItem.dataField == "timeIn") 
+				{
+					formatString = DateUtils.dateTimeFormat(date.timeIn,Constants.DATE_TIME_FORMAT);
+				}
+				
+				if(date.timeOut != null && dataItem.dataField == "timeOut") 
+				{
+					formatString = DateUtils.dateTimeFormat(date.timeOut,Constants.DATE_TIME_FORMAT);
+				}
+				return formatString;
+			}
+			
+			private function getDayName(date:Object, item:DataGridColumn):String
+			{
+				var formatString:String = null;
+				if(date.timesheetDate)
+					formatString = DateUtils.dayOfWeekAsString(date.timesheetDate);
+				return formatString;
+			}
+			
+			private function searchReportLog():void
+			{
+				timeCardService.countLogReport(getReportParams());
+				timeCardService.listLogReport(getReportParams(0,NUM_PER_PAGE));
+			}
+			
+			// start of paging
+			private function initializePaging(event:Event):void
+			{
+				var _numRecs:int = timeCardService.totalReport;
+				intPages = Math.ceil(_numRecs/NUM_PER_PAGE);
+				
+				refreshDP(0);
+				
+				if(intPages <= 1)
+				{ //less then one page ?
+					intPages = 1;
+					createNavBar(1);
+				}
+				else
+				{ //more pages !!!!
+					createNavBar(intPages);    
+				}
+			}
+			
+			private function refreshDP(start:uint):void
+			{
+				var first:uint = start * NUM_PER_PAGE;
+				timeCardService.listLogReport(getReportParams(first,NUM_PER_PAGE));
+				
+				navTitle.text = "Page: "+ (start + 1).toString() +" of: "+intPages.toString();
+			}
+			
+			/* Create pagination */
+			private function createNavBar(pages:uint = 1,intSet:uint = 0):void{
+				nav.removeAll();
+				if( intSet > 1 )
+				{
+					nav.addItem( {label:"<< First", data:0} );
+					var intLFive:int = intSet - navSize; // calculate start of last 5;
+					nav.addItem( {label:"< Previous", data:intLFive} );
+				}
+				
+				for( var x:uint = 0; x < navSize; x++)
+				{
+					var pg:uint = x + intSet;
+					nav.addItem( {label:pg + 1, data:pg} );
+					
+					var pgg:uint = pg + 1;
+					if(pgg >= intPages)
+					{ 
+						//if you reach the last page stop adding linkselectors on the navbar
+						x = navSize; 
+					}
+				}
+				
+				var lastpage:Number = 0;
+				for( var y:uint = navSize; y <= pages-1;y = y + navSize )
+				{ 
+					//lets calculate the lastpage button
+					if(y+5 > navSize)
+					{
+						lastpage = y;
+					}
+				}
+				
+				if( pg < pages - 1 )
+				{
+					nav.addItem( {label:"Next >", data:pg + 1} );
+					nav.addItem( {label:"Last >>", data:lastpage} );
+				}                              
+			}
+			
+			/* Refresh data per page groups */
+			private function navigatePage(event:ItemClickEvent):void
+			{
+				refreshDP(event.item.data);
+				var lb:String = event.item.label.toString();
+				if( lb.indexOf("<") > -1 || lb.indexOf(">") > -1 )
+				{
+					createNavBar(intPages,event.item.data);
+				}
+			}
+			// end of paging
+		]]>
+	</mx:Script>
+	
+	<screens:EmsHeader headerName="My Reports" userData="{userData}"/>
+	
+	<mx:HBox>
+		<mx:Label text="Generate Reports: "/>
+		<mx:DateField id="fromDate" yearNavigationEnabled="true" />
+		<mx:Spacer />
+		<mx:DateField id="toDate" yearNavigationEnabled="true"/>
+		<mx:Spacer />
+		<mx:Button buttonMode="true" label="Submit" click="searchReportLog()" />
+	</mx:HBox>
+	
+	<!-- paging navigation -->
+	<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+		<mx:Label id="navTitle" fontWeight="bold" />
+		<mx:LinkBar id="pageNav" 
+					itemClick="navigatePage(event)" 
+					dataProvider="{nav}"
+					horizontalGap="1" 
+					width="100%" horizontalAlign="right"/>
+	</mx:HBox>
+	
+	<mx:DataGrid dataProvider="{timeCardService.listOfReportsLog}"  >
+		<mx:columns>
+			<mx:DataGridColumn headerText="Day" labelFunction="getDayName"/>
+			<mx:DataGridColumn headerText="Remarks" dataField="remarks"/>
+			<mx:DataGridColumn headerText="Timesheet Date" dataField="timesheetDate" labelFunction="formatDate"/>
+			<mx:DataGridColumn headerText="Time In" dataField="timeIn" labelFunction="formatDate"/>
+			<mx:DataGridColumn headerText="Time Out" dataField="timeOut" labelFunction="formatDate"/>
+		</mx:columns>
+	</mx:DataGrid>
 	
 </mx:VBox>

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"
 		 horizontalAlign="center" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10" 
-	creationComplete="init();">
+	creationComplete="init();" xmlns:screens="com.exist.ems.view.screens.*">
 	
 	<mx:Script>
 		<![CDATA[
-			import com.exist.ems.control.events.timecard.TimeInEvents;
-			import com.exist.ems.control.events.timecard.TimeOutEvents;
+			import com.exist.ems.control.events.BaseEvents;
 			import com.exist.ems.model.UserData;
+			import com.exist.ems.utils.ConstantEvents;
+			import com.exist.ems.utils.Constants;
 			import com.exist.ems.utils.DateUtils;
 			import com.exist.ems.view.service.timecard.TimeCardService;
 			
@@ -20,9 +21,6 @@
 			[Bindable]
 			private var userData:UserData = UserData.getInstance();
 			
-			private static const DATE_FORMAT:String = "YYYY-MM-DD";
-			private static const DATE_TIME_FORMAT:String = "L:NN:SS A YYYY-MM-DD";
-			
 			private function init():void
 			{
 				timeCardService = new TimeCardService();
@@ -30,20 +28,22 @@
 				timeCardService.getListOfPreviousLog(userData.empCode);
 			}
 			
-			private function formatTimesheetDate(date:Object,item:DataGridColumn):String
+			private function formatDate(date:Object,dataItem:DataGridColumn):String
 			{
 				var formatString:String = null;
-				if(date.timesheetDate != null)
-					formatString = DateUtils.dateFormat(date.timesheetDate,DATE_FORMAT);
-				return formatString;
-			}
-			
-			private function formatTimeIn(date:Object, item:DataGridColumn):String
-			{
-				var formatString:String = null;
-				if(date.timeIn != null) 
+				if(date.timesheetDate != null && dataItem.dataField == "timesheetDate")
 				{
-					formatString = DateUtils.dateTimeFormat(date.timeIn,DATE_TIME_FORMAT);
+					formatString = DateUtils.dateFormat(date.timesheetDate,Constants.DATE_FORMAT);
+				}
+				
+				if(date.timeIn != null && dataItem.dataField == "timeIn") 
+				{
+					formatString = DateUtils.dateTimeFormat(date.timeIn,Constants.DATE_TIME_FORMAT);
+				}
+				
+				if(date.timeOut != null && dataItem.dataField == "timeOut") 
+				{
+					formatString = DateUtils.dateTimeFormat(date.timeOut,Constants.DATE_TIME_FORMAT);
 				}
 				return formatString;
 			}
@@ -53,16 +53,6 @@
 				var formatString:String = null;
 				if(date.timesheetDate)
 					formatString = DateUtils.dayOfWeekAsString(date.timesheetDate);
-				return formatString;
-			}
-			
-			private function formatTimeOut(date:Object, item:DataGridColumn):String
-			{
-				var formatString:String = null;
-				if(date.timeOut != null) 
-				{
-					formatString = DateUtils.dateTimeFormat(date.timeOut,DATE_TIME_FORMAT);
-				}
 				return formatString;
 			}
 			
@@ -80,7 +70,7 @@
 			{
 				if(event.detail == Alert.YES)
 				{
-					new TimeInEvents(this.timeCardService).dispatch();
+					new BaseEvents(ConstantEvents.TIME_IN, timeCardService).dispatch();
 				}
 			}
 			
@@ -88,39 +78,30 @@
 			{
 				if(event.detail == Alert.YES)
 				{
-					new TimeOutEvents(this.timeCardService).dispatch();
+					new BaseEvents(ConstantEvents.TIME_OUT, timeCardService).dispatch();
 				}
 			}
 		]]>
 	</mx:Script>
-	<mx:HBox width="100%" backgroundColor="#FCFD97">
-		<mx:Label text="My TimeCard" fontWeight="bold" />
-		<mx:VBox horizontalAlign="right" width="100%">
-			<mx:Label text="Hello Mr. {userData.firstName} {userData.lastName}" fontWeight="bold" />
-			<mx:HBox>
-				<mx:Label text="Today is:" fontWeight="bold" />
-				<mx:Label text="{DateUtils.dateTimeFormat(new Date(),DATE_TIME_FORMAT)}" fontWeight="bold"/>
-			</mx:HBox>
-			<mx:HRule width="100%"/>
-			<mx:HBox>
-				<mx:Button id="buttonTimeIn" label="Time In" click="confirmTimeIn(event);"/>
-				<mx:Button id="buttonTimeOut" label="Time Out" click="confirmTimeOut(event);"/>
-			</mx:HBox>
-		</mx:VBox>
+	
+	<screens:EmsHeader headerName="My TimeCard" userData="{userData}"/>
+		
+	<mx:HBox>
+		<mx:Button id="buttonTimeIn" label="Time In" click="confirmTimeIn(event);"/>
+		<mx:Button id="buttonTimeOut" label="Time Out" click="confirmTimeOut(event);"/>
 	</mx:HBox>
-	
-	
+		
 	<!-- Current week time entry -->
 	<mx:Panel title="Current Week Entry" 
          paddingTop="10" paddingRight="10" paddingBottom="10" paddingLeft="10" horizontalAlign="center" >
          
 	<mx:DataGrid id="currentWeekLog" dataProvider="{this.timeCardService.listOfCurrentLog}" resizableColumns="true" width="650" horizontalScrollPolicy="off" >
 		<mx:columns>
-			<mx:DataGridColumn headerText="Day" labelFunction="getDayName"/>
+			<mx:DataGridColumn headerText="Day" dataField="timesheetDate" labelFunction="getDayName"/>
 			<mx:DataGridColumn headerText="Remarks" dataField="remarks"/>
-			<mx:DataGridColumn headerText="Timesheet Date" dataField="timesheetDate" labelFunction="formatTimesheetDate"/>
-			<mx:DataGridColumn headerText="Time In" dataField="timeIn" labelFunction="formatTimeIn"/>
-			<mx:DataGridColumn headerText="Time Out" dataField="timeOut" labelFunction="formatTimeOut"/>
+			<mx:DataGridColumn headerText="Timesheet Date" dataField="timesheetDate" labelFunction="formatDate"/>
+			<mx:DataGridColumn headerText="Time In" dataField="timeIn" labelFunction="formatDate"/>
+			<mx:DataGridColumn headerText="Time Out" dataField="timeOut" labelFunction="formatDate"/>
 		</mx:columns>
 	</mx:DataGrid>
 	
@@ -132,11 +113,11 @@
          
 	<mx:DataGrid id="lastWeekLog" dataProvider="{this.timeCardService.listOfPreviousLog}" resizableColumns="true" width="650">
 		<mx:columns>
-			<mx:DataGridColumn headerText="Day" labelFunction="getDayName"/>
+			<mx:DataGridColumn headerText="Day" dataField="timesheetDate" labelFunction="getDayName"/>
 			<mx:DataGridColumn headerText="Remarks" dataField="remarks"/>
-			<mx:DataGridColumn headerText="Timesheet Date" dataField="timesheetDate" labelFunction="formatTimesheetDate"/>
-			<mx:DataGridColumn headerText="Time In" dataField="timeIn" labelFunction="formatTimeIn"/>
-			<mx:DataGridColumn headerText="Time Out" dataField="timeOut" labelFunction="formatTimeOut"/>
+			<mx:DataGridColumn headerText="Timesheet Date" dataField="timesheetDate" labelFunction="formatDate"/>
+			<mx:DataGridColumn headerText="Time In" dataField="timeIn" labelFunction="formatDate"/>
+			<mx:DataGridColumn headerText="Time Out" dataField="timeOut" labelFunction="formatDate"/>
 		</mx:columns>
 	</mx:DataGrid>
 	
