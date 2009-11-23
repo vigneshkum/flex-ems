@@ -1,5 +1,7 @@
 package com.exist.ems.business.delegates
 {
+	import com.exist.ems.model.ReportVO;
+	
 	import flash.events.EventDispatcher;
 	
 	import mx.rpc.IResponder;
@@ -38,6 +40,18 @@ package com.exist.ems.business.delegates
 		public function timeCardOUT(empCode:String):void
 		{
 			var call:Object = service.saveTimeOut(empCode);
+			call.addResponder(responder);
+		}
+		
+		public function listReportsLog(vo:ReportVO):void
+		{
+			var call:Object = service.listReportsLog(vo);
+			call.addResponder(responder);
+		}
+		
+		public function countReportsLog(vo:ReportVO):void
+		{
+			var call:Object = service.countReportsLog(vo);
 			call.addResponder(responder);
 		}
 	}
