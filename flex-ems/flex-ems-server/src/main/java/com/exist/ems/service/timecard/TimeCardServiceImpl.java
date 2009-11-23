@@ -17,6 +17,7 @@ import com.exist.ems.dao.timecard.TimeCardDao;
 import com.exist.ems.exception.EmsException;
 import com.exist.ems.model.TimeCard;
 import com.exist.ems.utils.DateUtils;
+import com.exist.ems.utils.ReportVO;
 
 import flex.contrib.stereotypes.RemotingDestination;
 
@@ -133,6 +134,26 @@ public class TimeCardServiceImpl implements TimeCardService {
 	    final Date toLastWeek = DateUtils.getDateInterval(fromLastWeek, Calendar.DATE, 6);
 	    
 	    return timeCardDao.getWeekLog(empCode, fromLastWeek, toLastWeek);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.exist.ems.service.timecard.TimeCardService#countReportsLog(java.lang.String, java.util.Date, java.util.Date)
+	 */
+	public int countReportsLog(ReportVO reportVO)
+			throws DataAccessException
+	{
+		return timeCardDao.countReportsLog(reportVO.getEmpCode(), reportVO.getFromDate(), reportVO.getToDate());
+	}
+
+	/* (non-Javadoc)
+	 * @see com.exist.ems.service.timecard.TimeCardService#listReportsLog(java.lang.String, java.util.Date, java.util.Date, int, int)
+	 */
+	public List<TimeCard> listReportsLog(ReportVO reportVO) throws DataAccessException
+	{
+		
+		return timeCardDao.listReportsLog(reportVO.getEmpCode(), reportVO.getFromDate(), 
+										  reportVO.getToDate(), reportVO.getFirst(),
+										  reportVO.getCount());
 	}
 
 }
