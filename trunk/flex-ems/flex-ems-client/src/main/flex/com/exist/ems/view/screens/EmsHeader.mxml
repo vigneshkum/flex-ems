@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" backgroundColor="#FCFD97">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.exist.ems.model.UserData;
+			import com.exist.ems.utils.DateUtils;
+			
+			[Bindable]
+			public var headerName:String;
+			[Bindable]
+			public var userData:UserData;
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Label text="{headerName}" fontWeight="bold" />
+	<mx:VBox horizontalAlign="right" width="100%">
+		<mx:Label text="Hello Mr. {userData.firstName} {userData.lastName}" fontWeight="bold" />
+		<mx:HBox>
+			<mx:Script>
+				<![CDATA[
+					import com.exist.ems.utils.Constants;
+				]]>
+			</mx:Script>
+			<mx:Label text="Today is:" fontWeight="bold" />
+			<mx:Label text="{DateUtils.dateTimeFormat(new Date(),Constants.DATE_TIME_FORMAT)}" fontWeight="bold"/>
+		</mx:HBox>
+		<mx:HRule width="100%"/>
+	</mx:VBox>
+		
+</mx:HBox>
