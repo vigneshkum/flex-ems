@@ -15,13 +15,21 @@ import com.exist.ems.model.TimeCard;
  * @created 2009 11 11 - 14:18:24
  * 
  */
-public interface TimeCardDao {
+public interface TimeCardDao
+{
 
 	void save(TimeCard timeCard) throws DataAccessException;
-	
+
 	List<TimeCard> loadAll() throws DataAccessException;
-	
+
 	TimeCard getCurrentTimeCard(String empCode) throws DataAccessException;
-	
-	List<TimeCard> getWeekLog(String empCode, Date from, Date to) throws DataAccessException;
+
+	List<TimeCard> getWeekLog(String empCode, Date from, Date to)
+			throws DataAccessException;
+
+	List<TimeCard> listReportsLog(String empCode, Date from, Date to,
+			int first, int max) throws DataAccessException;
+
+	int countReportsLog(String empCode, Date from, Date to)
+			throws DataAccessException;
 }

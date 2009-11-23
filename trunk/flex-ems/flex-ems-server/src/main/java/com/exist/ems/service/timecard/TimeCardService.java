@@ -3,6 +3,7 @@
  */
 package com.exist.ems.service.timecard;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
@@ -10,6 +11,7 @@ import org.springframework.dao.DataAccessException;
 import com.exist.ems.exception.EmsException;
 import com.exist.ems.model.TimeCard;
 import com.exist.ems.service.EmsService;
+import com.exist.ems.utils.ReportVO;
 
 /**
  * @author Emmanuel Nollase emanux
@@ -29,4 +31,8 @@ public interface TimeCardService extends EmsService {
 	List<TimeCard> listCurrentWeekLog(String empCode) throws DataAccessException;
 	
 	List<TimeCard> listPreviousWeekLog(String empCode) throws DataAccessException;
+	
+	List<TimeCard> listReportsLog(ReportVO reportVO) throws DataAccessException;
+	
+	int countReportsLog(ReportVO reportVO) throws DataAccessException;
 }
