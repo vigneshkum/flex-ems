@@ -23,8 +23,7 @@
 			
 			private function exit():void
 			{
-				//userLocator.modelWorkflowState = UserModelLocator.LOGIN_SCREEN;
-				var logoutEventObj:LogOutEvent = new LogOutEvent("logout",0);
+				var logoutEventObj:LogOutEvent = new LogOutEvent();
 				dispatchEvent(logoutEventObj);
 			}
 		]]>
