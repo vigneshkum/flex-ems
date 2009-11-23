@@ -10,12 +10,13 @@
     <mx:Script>
     	<![CDATA[
 			import com.exist.ems.control.events.login.LogOutEvent;
-			import com.exist.ems.control.events.login.LoginEvent;
+			import com.exist.ems.utils.ConstantEvents;
     		
     		private function init():void
     		{
-    			 Application.application.addEventListener(LoginEvent.MAIN_LOGIN,loginSuccessHandler);
-				 Application.application.addEventListener(LoginEvent.FAILED_LOGIN,loginFailedHandler);
+    			 Application.application.addEventListener(ConstantEvents.LOGIN_SUCCESS,loginSuccessHandler);
+				 Application.application.addEventListener(ConstantEvents.LOGIN_FAILED,loginFailedHandler);
+				
     		}
     		
     		private function logoutHandler(event:LogOutEvent):void
