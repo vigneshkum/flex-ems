@@ -1,9 +1,10 @@
 package com.exist.ems.view.service.user
 {
+	import com.exist.ems.control.events.BaseEvents;
 	import com.exist.ems.control.events.employee.SaveEmployeeEvent;
-	import com.exist.ems.control.events.login.LoginEvent;
 	import com.exist.ems.model.UserData;
 	import com.exist.ems.model.employee.Employee;
+	import com.exist.ems.utils.ConstantEvents;
 	import com.exist.ems.view.service.BaseService;
 
 	public class UserService extends BaseService
@@ -27,7 +28,7 @@ package com.exist.ems.view.service.user
 			
 			this.username = user;
 			this.password = pass;
-			new LoginEvent(this).dispatch();
+			new BaseEvents(ConstantEvents.LOGIN_MAIN,this).dispatch();
 		}
 		
 		public function addUserData(data:Object):void
